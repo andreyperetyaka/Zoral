@@ -42,18 +42,21 @@ const getProjection = function (src, proto) {
     throw new Error(
       'Please provide two arguments with Object type to the function'
     );
-  return Object.assign(
-    {},
-    ...Object.keys(proto).map((key) => {
-      if (
-        proto[key] &&
-        proto[key] instanceof Object &&
-        src[key] instanceof Object
-      ) {
-        return { [key]: getProjection(src[key], proto[key]) };
-      } else {
-        return { [key]: src[key] };
-      }
-    })
-  );
+  return Object.keys(proto).reduce((object, key) => {
+    if (
+      proto[key] &&
+      proto[key] instanceof Object &&
+      src[key] instanceof Object
+    ) {
+      object[key] = getProjection(src[key], proto[key]);
+      return object;
+    }
+    return src[key]
+      ? Object.defineProperty(
+          object,
+          key,
+          Object.getOwnPropertyDescriptor(src, key)
+        )
+      : object;
+  }, {});
 };
