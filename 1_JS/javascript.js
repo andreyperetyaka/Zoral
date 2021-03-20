@@ -42,7 +42,7 @@ const getProjection = function (src, proto) {
     throw new Error(
       'Please provide two arguments with Object type to the function'
     );
-  return Object.keys(proto).reduce((object, key) => {
+  return Object.getOwnPropertyNames(proto).reduce((object, key) => {
     if (
       proto[key] &&
       proto[key] instanceof Object &&
